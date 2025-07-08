@@ -38,6 +38,13 @@ def report_location():
 
     return jsonify({'status': 'received'})
 
+from flask import send_from_directory
+
+@app.route('/report.html')
+def serve_report():
+    return send_from_directory('.', 'report.html')
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
